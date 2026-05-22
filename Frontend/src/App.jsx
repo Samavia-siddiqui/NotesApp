@@ -32,7 +32,7 @@ export default function App() {
   const [content, setContent] = useState('');
   const [editingNote, setEditingNote] = useState(null);
 
-  const API_URL = 'http://localhost:5000/api/notes';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/notes';
 
   // Fetch all notes from API
   const fetchNotes = async () => {
