@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import NoteForm from './components/NoteForm';
-import { Sparkles, Edit2, Trash2, Calendar } from 'lucide-react';
+import NoteCard from './components/NoteCard';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 import './App.css';
 
 export default function App() {
@@ -155,65 +157,49 @@ export default function App() {
             </span>
           </h2>
 
-          {notes.length === 0 ? (
-            /* Empty State */
-            <div className="w-full max-w-md mx-auto text-center py-16 px-4 glass-panel rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 flex flex-col items-center justify-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center text-violet-500 dark:text-violet-400 animate-pulse">
-                <Sparkles size={28} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300 font-display">
-                  Your board is empty
-                </h3>
-                <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1 max-w-xs mx-auto">
-                  Create your first note above to capture inspiration, tasks, or daily logs!
-                </p>
-              </div>
-            </div>
-          ) : (
-            /* Notes Grid (basic cards for Commit 3) */
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {notes.map(note => (
-                <div
-                  key={note.id}
-                  className="glass-card p-6 rounded-2xl flex flex-col justify-between min-h-[180px] group border border-zinc-200/50 dark:border-zinc-800/40"
-                >
-                  <div>
-                    <h3 className="text-lg font-semibold font-display text-zinc-800 dark:text-zinc-100 leading-snug">
-                      {note.title}
-                    </h3>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-3 whitespace-pre-wrap leading-relaxed">
-                      {note.content}
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mt-6 pt-4 border-t border-zinc-100 dark:border-zinc-800/40">
-                    <span className="text-xs text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5 font-medium">
-                      <Calendar size={13} />
-                      {formatDate(note.createdAt)}
-                    </span>
-                    
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => handleStartEdit(note)}
-                        className="p-2 rounded-lg text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10 dark:text-zinc-500 dark:hover:text-amber-400 transition-colors"
-                        title="Edit note"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteNote(note.id)}
-                        className="p-2 rounded-lg text-zinc-400 hover:text-rose-500 hover:bg-rose-500/10 dark:text-zinc-500 dark:hover:text-rose-400 transition-colors"
-                        title="Delete note"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
+          <AnimatePresence mode="wait">
+            {notes.length === 0 ? (
+              /* Empty State */
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3 }}
+                className="w-full max-w-md mx-auto text-center py-16 px-4 glass-panel rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 flex flex-col items-center justify-center space-y-4"
+              >
+                <div className="w-16 h-16 rounded-full bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center text-violet-500 dark:text-violet-400 animate-pulse">
+                  <Sparkles size={28} />
                 </div>
-              ))}
-            </div>
-          )}
+                <div>
+                  <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-300 font-display">
+                    Your board is empty
+                  </h3>
+                  <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-1 max-w-xs mx-auto">
+                    Create your first note above to capture inspiration, tasks, or daily logs!
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
+              /* Notes Grid */
+              <motion.div
+                key="grid"
+                layout
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                <AnimatePresence mode="popLayout">
+                  {notes.map(note => (
+                    <NoteCard
+                      key={note.id}
+                      note={note}
+                      onEdit={handleStartEdit}
+                      onDelete={handleDeleteNote}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       </main>
     </div>
