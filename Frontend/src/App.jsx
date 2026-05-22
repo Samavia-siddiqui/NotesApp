@@ -151,7 +151,7 @@ export default function App() {
                 GlowNotes
               </h1>
               <p className="text-[10px] sm:text-xs font-medium text-zinc-400 dark:text-zinc-500 tracking-wider uppercase">
-                Premium Space
+                Workspace
               </p>
             </div>
           </div>
