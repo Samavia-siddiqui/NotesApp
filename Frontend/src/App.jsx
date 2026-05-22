@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import NoteForm from './components/NoteForm';
 import NoteCard from './components/NoteCard';
+import ThemeToggle from './components/ThemeToggle';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import './App.css';
 
 export default function App() {
-  // Theme state
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Theme state with localStorage persistence
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -41,17 +56,7 @@ export default function App() {
   }, []);
 
   // Toggle Dark Mode
-  const toggleTheme = () => {
-    setIsDarkMode(prev => {
-      const newVal = !prev;
-      if (newVal) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      return newVal;
-    });
-  };
+  const toggleTheme = () => setIsDarkMode(prev => !prev);
 
   // Add or Update Note via API
   const handleSubmitNote = async () => {
@@ -151,13 +156,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* Theme Switcher Button Placeholder */}
-          <button
-            onClick={toggleTheme}
-            className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors cursor-pointer text-sm font-semibold flex items-center gap-2"
-          >
-            {isDarkMode ? '🌞 Light' : '🌙 Dark'}
-          </button>
+          {/* Theme Switcher Toggle Switch */}
+          <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
         </div>
       </header>
 
