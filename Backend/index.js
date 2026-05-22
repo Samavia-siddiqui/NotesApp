@@ -12,8 +12,8 @@ app.use(express.json());
 let notes = [
   {
     id: '1',
-    title: '💡 App Idea: GlowNotes',
-    content: 'Create a full-stack notes app with Tailwind CSS, Framer Motion, and a Node.js/Express.js backend. Include glassmorphic cards and beautiful transitions.',
+    title: '📋 Today\'s Task List',
+    content: 'Morning workout (30 mins)\nReply to pending emails\nTeam standup at 10 AM\nReview pull requests on GitHub\nLunch break — go outside!\nFinish the project report\nRead for 20 mins before bed',
     createdAt: Date.now() - 3600000 * 2
   },
   {
